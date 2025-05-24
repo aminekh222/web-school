@@ -164,7 +164,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -173,10 +172,6 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-    ],
-
-    'aliases' => [
-        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];
