@@ -8,7 +8,7 @@
         <div class="bg-white shadow-md rounded-lg p-6">
             <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-6">
                 <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
-                    @if(auth()->user()->profile_photo && auth()->user()->profile_photo !== 'profile-photos/default-avatar.jpg')
+                    @if(auth()->user()->profile_photo)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" 
                              alt="Photo de profil" 
                              class="w-full h-full object-cover">

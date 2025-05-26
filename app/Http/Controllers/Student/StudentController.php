@@ -78,8 +78,8 @@ class StudentController extends Controller
         // Gestion de la photo de profil
         if ($request->hasFile('profile_photo')) {
             // Supprimer l'ancienne photo si elle existe et n'est pas l'avatar par défaut
-            if ($user->profile_photo && $user->profile_photo !== 'default-avatar.jpg') {
-                Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
+            if ($user->profile_photo && $user->profile_photo !== 'profile-photos/default-avatar.jpg') {
+                Storage::disk('public')->delete($user->profile_photo);
             }
 
             // Générer un nom unique pour la nouvelle photo
@@ -88,8 +88,8 @@ class StudentController extends Controller
             // Stocker la nouvelle photo
             $request->profile_photo->storeAs('profile-photos', $filename, 'public');
             
-            // Mettre à jour le chemin de la photo dans la base de données
-            $validated['profile_photo'] = $filename;
+            // Mettre à jour le chemin complet de la photo dans la base de données
+            $validated['profile_photo'] = 'profile-photos/' . $filename;
         }
 
         // Mettre à jour les informations de l'utilisateur

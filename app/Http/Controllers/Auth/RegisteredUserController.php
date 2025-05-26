@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
             'address' => $request->address,
             'role' => 'student', // Par défaut, tous les nouveaux utilisateurs sont des étudiants
             'is_active' => true,
-            'profile_photo' => 'profile-photos/default-avatar.jpg', // valeur par défaut
+            'profile_photo' => 'profile-photos/default-avatar.jpg', // Chemin complet de l'avatar par défaut
         ]);
 
         event(new Registered($user));

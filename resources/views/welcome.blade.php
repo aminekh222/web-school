@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Bienvenue sur Web School')
 @section('content')
 <div class="relative min-h-screen bg-gray-50">
     <!-- Hero section -->
