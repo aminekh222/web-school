@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Storage;
 
 class StudentManagementController extends Controller
 {
@@ -23,16 +24,26 @@ class StudentManagementController extends Controller
             'password' => ['required', Password::defaults()],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ]);
 
-        $user = User::create([
+        $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'phone' => $validated['phone'],
             'address' => $validated['address'],
             'role' => 'student',
-        ]);
+            'profile_photo' => 'profile-photos/default-avatar.jpg',
+        ];
+
+        if ($request->hasFile('profile_photo')) {
+            $filename = time() . '_' . uniqid() . '.' . $request->profile_photo->extension();
+            $request->profile_photo->storeAs('profile-photos', $filename, 'public');
+            $userData['profile_photo'] = 'profile-photos/' . $filename;
+        }
+
+        $user = User::create($userData);
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Étudiant créé avec succès.');
@@ -51,12 +62,24 @@ class StudentManagementController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
             'is_active' => ['boolean'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ]);
+
+        if ($request->hasFile('profile_photo')) {
+            // Supprimer l'ancienne photo si elle existe et n'est pas l'avatar par défaut
+            if ($student->profile_photo && $student->profile_photo !== 'profile-photos/default-avatar.jpg') {
+                Storage::disk('public')->delete($student->profile_photo);
+            }
+
+            $filename = time() . '_' . uniqid() . '.' . $request->profile_photo->extension();
+            $request->profile_photo->storeAs('profile-photos', $filename, 'public');
+            $validated['profile_photo'] = 'profile-photos/' . $filename;
+        }
 
         $student->update($validated);
 
         return redirect()->route('admin.students.index')
-            ->with('success', 'Informations de l\'étudiant mises à jour.');
+            ->with('success', 'Étudiant mis à jour avec succès.');
     }
 
     public function destroy(User $student)
